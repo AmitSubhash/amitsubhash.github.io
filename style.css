@@ -31,12 +31,12 @@ body {
   overflow: hidden;
 }
 
-/* Brain canvas */
+/* Brain canvas -- above text so outline renders on top */
 .brain-overlay {
   position: absolute;
   top: 0; left: 0;
   pointer-events: none;
-  z-index: 1;
+  z-index: 2;
 }
 
 /* Ghost text lines -- mask-based spotlight reveal */
@@ -132,7 +132,47 @@ body {
   text-shadow: 0 0 12px rgba(210, 195, 150, 0.4), 0 0 30px rgba(210, 195, 150, 0.15);
 }
 
-/* Ensure cursor hidden everywhere */
-*, *::before, *::after {
-  cursor: none !important;
+/* Ensure cursor hidden everywhere (desktop only) */
+@media (pointer: fine) {
+  *, *::before, *::after {
+    cursor: none !important;
+  }
+}
+
+/* --- Mobile -------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+  body {
+    cursor: auto !important;
+  }
+
+  .id-name {
+    font-size: 32px;
+  }
+
+  .id-fields {
+    font-size: 10px;
+    letter-spacing: 0.10em;
+  }
+
+  .id-affiliation {
+    font-size: 10px;
+  }
+
+  .id-links {
+    gap: 20px;
+  }
+
+  .id-links a {
+    font-size: 10px;
+    cursor: auto !important;
+  }
+
+  .id-tagline {
+    font-size: 12px;
+  }
+
+  .ed-line {
+    font-size: 14px !important;
+  }
 }

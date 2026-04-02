@@ -20,31 +20,65 @@ import {
 const BODY_TEXT = `I believe that every right implies a responsibility, every opportunity an obligation, every possession a duty. If you want to succeed you should strike out on new paths rather than travel the worn paths of accepted success. I build instruments for seeing inside the living brain. Not because it is easy but because what you cannot measure you cannot understand. The secret to success is to do the common thing uncommonly well. I chase photons through bone and tissue, simulate light scattering in neonatal skulls, and try always to see a little more clearly. Do not be afraid to give up the good to go for the great. The work demands patience. A photon is launched, scattered, absorbed, or lost. The inverse problem is ill-posed. The reconstruction converges slowly. But every iteration brings the image closer to truth. I do not think there is any other quality so essential to success of any kind as the quality of perseverance. It overcomes almost everything, even nature. I was not born with a silver spoon but I was born with something far better: an unshakeable will to work. Starting from scratch is a privilege not a punishment. Neuroengineering is not a discipline it is a conviction that computation can illuminate what the eye cannot reach. Near-infrared light enters the skull and what returns carries the signature of blood and thought. The man who starts simply to make money never makes much. Start with purpose. I came to build tools that give clinicians sight where before there was darkness. Every setback is a setup for a comeback. I always tried to turn every disaster into an opportunity. I have debugged code at three in the morning, rewritten pipelines that refused to converge, stared at loss curves that plateaued for days. The reward is the moment the hemodynamic map resolves and cortical activation appears where before there was only noise. Your future is created by what you do today not tomorrow. The most common way people give up their power is by thinking they do not have any. I believe in the compound interest of small daily effort. In the elegance of a well-written simulation. In the quiet satisfaction of a model that generalizes. Sow a thought, reap an action. Sow an action, reap a habit. Sow a habit, reap a character. Sow a character, reap a destiny. I believe in the dignity of labor whether with head or hand. That there is nothing in this world that is worth having or worth doing unless it means effort and difficulty. I study the physics of light in tissue. I train neural networks on synthetic brains. I run jobs on GPU clusters at dawn and read the logs before coffee. This is not ambition. This is devotion. Good fortune is what happens when opportunity meets with preparation. Building at the frontier of what light can reveal about the mind. I build for the infants who cannot hold still in a scanner. I build for the clinicians who need answers in real time. I build because the brain is the last frontier and I refuse to look away. The only question with wealth is what you do with it. The only question with knowledge is who you serve with it. Every success requires a sacrifice. I have made mine gladly.`;
 
 // ---------------------------------------------------------------------------
-// Brain outline
+// Brain SVG path -- traced from anatomical reference via potrace
+// This is the FULL smooth bezier path. Used with Path2D for drawing.
+// Coords are in a 980x980 viewport (potrace output space).
 // ---------------------------------------------------------------------------
 
+// Outer contour with all gyri detail (smooth bezier curves)
+const BRAIN_SVG_OUTER = "M464.50,209.00 C456.20,209.90,445.10,212.40,441.50,214.20 C440.40,214.80,438.50,216.10,437.40,217.20 C435.20,219.10,435.10,219.10,424.40,216.40 C404.00,211.10,378.80,213.20,350.80,222.40 C331.90,228.60,318.40,236.90,313.10,245.60 C311.20,248.80,309.90,249.90,308.00,250.00 C304.10,250.00,296.00,252.40,291.00,255.00 C282.00,259.50,277.10,263.70,255.80,285.10 C238.90,302.00,233.50,308.10,231.20,312.70 C227.40,320.20,225.90,327.30,227.00,332.80 C227.50,335.80,227.40,337.30,226.60,337.60 C226.00,337.80,223.50,338.70,221.10,339.50 C214.80,341.70,208.80,346.60,204.70,353.00 C202.80,356.00,197.00,366.70,191.90,376.70 C182.90,394.20,182.50,395.30,182.40,401.70 C182.30,407.50,181.70,409.70,178.50,416.00 C169.90,433.10,167.40,446.90,170.40,461.00 C172.60,471.40,175.70,477.00,185.50,488.30 C193.50,497.50,194.00,498.40,194.00,502.70 C194.00,508.60,196.60,526.30,199.00,536.50 C204.70,560.90,216.90,585.80,230.40,600.80 C241.70,613.10,260.50,625.40,275.50,630.00 C290.60,634.60,309.90,636.10,326.90,634.00 C331.50,633.40,335.50,633.20,335.80,633.50 C336.80,634.40,330.40,664.70,326.60,677.20 C324.60,683.60,321.20,693.20,318.90,698.40 C314.40,709.00,314.60,711.00,320.10,711.00 C326.10,711.00,332.30,715.10,344.60,727.50 C355.80,738.80,361.50,743.00,365.30,743.00 C366.20,743.00,368.80,739.30,371.60,734.30 C389.30,701.70,408.00,679.00,434.00,658.50 C455.20,641.80,466.50,628.60,470.10,616.40 C471.30,612.40,471.70,612.00,474.00,612.40 C475.40,612.70,490.20,613.00,507.00,613.20 L537.50,613.50 L544.00,610.40 C547.60,608.60,553.00,606.70,556.00,606.00 C565.30,603.90,582.30,595.20,598.90,584.20 C615.50,573.10,624.10,556.60,621.10,541.70 C619.70,535.10,615.40,528.30,606.10,518.00 C602.60,514.10,600.00,510.70,600.20,510.50 C600.40,510.30,604.40,510.00,609.20,509.80 L617.80,509.50 L633.10,517.00 L648.40,524.50 L667.90,524.80 C678.70,525.00,691.10,525.20,695.50,525.20 C702.60,525.40,708.70,524.60,728.00,520.80 C742.50,518.10,757.80,509.60,771.40,496.90 C779.20,489.60,789.60,476.70,793.00,470.10 C795.70,464.70,798.80,454.40,799.50,448.00 C799.90,444.90,801.80,439.30,803.90,435.10 C807.30,428.00,807.50,427.10,807.50,417.60 C807.50,408.40,807.20,407.00,804.50,401.60 C802.60,397.70,799.40,393.80,795.30,390.10 L789.00,384.50 L789.00,374.50 C789.00,357.30,784.40,345.40,773.30,334.30 C768.50,329.50,764.70,326.90,756.10,322.70 C745.20,317.30,745.00,317.10,740.00,309.70 C729.60,294.10,712.10,281.90,688.20,273.60 C674.70,268.90,674.90,269.00,664.40,259.10 C649.10,244.40,635.90,239.10,615.30,239.00 C606.10,239.00,605.10,238.80,604.50,237.10 C603.00,232.30,587.40,222.90,573.00,218.10 C560.30,214.00,543.90,213.50,531.60,216.80 C529.50,217.40,525.90,216.80,519.00,214.90 C500.50,209.70,479.80,207.50,464.50,209.00 Z";
+
+// Full traced SVG (all subpaths including internal detail)
+const BRAIN_SVG_FULL = `${BRAIN_SVG_OUTER}`;
+// Note: internal detail comes from the full potrace trace loaded at runtime
+
+// Brain bounds in the 980x980 space
+const BRAIN_BOUNDS = { minX: 167, minY: 207, maxX: 808, maxY: 743 };
+
+// Tracer path: 151 evenly-spaced points sampled from the smooth bezier outline.
+// Tracers follow this exact path, matching the visible SVG curves.
 const BRAIN_POLYGON: [number, number][] = [
-  [0.82, 0.42], [0.84, 0.37], [0.83, 0.32], [0.81, 0.27],
-  [0.77, 0.22], [0.72, 0.17], [0.66, 0.13], [0.59, 0.10],
-  [0.51, 0.09], [0.43, 0.09], [0.36, 0.11], [0.29, 0.14],
-  [0.23, 0.18], [0.18, 0.23], [0.14, 0.29], [0.11, 0.36],
-  [0.10, 0.43], [0.11, 0.49], [0.12, 0.53],
-  [0.11, 0.57], [0.10, 0.62], [0.12, 0.67], [0.16, 0.71],
-  [0.21, 0.74], [0.26, 0.75], [0.30, 0.73],
-  [0.33, 0.71], [0.36, 0.75], [0.38, 0.81], [0.40, 0.85],
-  [0.43, 0.87],
-  [0.47, 0.84], [0.53, 0.79], [0.60, 0.73],
-  [0.67, 0.66], [0.73, 0.59], [0.78, 0.52], [0.81, 0.46],
-  [0.82, 0.42],
+  [0.4605, 0.0043], [0.4416, 0.0084], [0.4243, 0.0165], [0.4016, 0.0175],
+  [0.3855, 0.0138], [0.3654, 0.0122], [0.3439, 0.0135], [0.3245, 0.0169],
+  [0.3042, 0.0225], [0.2828, 0.0303], [0.2646, 0.0390], [0.2467, 0.0506],
+  [0.2320, 0.0654], [0.2174, 0.0804], [0.1966, 0.0878], [0.1815, 0.0980],
+  [0.1653, 0.1143], [0.1503, 0.1317], [0.1343, 0.1508], [0.1204, 0.1677],
+  [0.1090, 0.1826], [0.0970, 0.2055], [0.0931, 0.2282], [0.0866, 0.2463],
+  [0.0678, 0.2595], [0.0570, 0.2759], [0.0463, 0.2995], [0.0358, 0.3236],
+  [0.0279, 0.3430], [0.0239, 0.3675], [0.0179, 0.3899], [0.0105, 0.4099],
+  [0.0046, 0.4358], [0.0035, 0.4567], [0.0068, 0.4812], [0.0150, 0.5034],
+  [0.0289, 0.5248], [0.0402, 0.5417], [0.0431, 0.5662], [0.0460, 0.5909],
+  [0.0499, 0.6147], [0.0552, 0.6375], [0.0619, 0.6599], [0.0713, 0.6847],
+  [0.0804, 0.7044], [0.0920, 0.7247], [0.1052, 0.7423], [0.1224, 0.7595],
+  [0.1389, 0.7725], [0.1558, 0.7830], [0.1750, 0.7911], [0.1968, 0.7962],
+  [0.2166, 0.7982], [0.2365, 0.7980], [0.2573, 0.7957], [0.2618, 0.8111],
+  [0.2572, 0.8380], [0.2535, 0.8572], [0.2481, 0.8806], [0.2414, 0.9036],
+  [0.2331, 0.9288], [0.2426, 0.9407], [0.2607, 0.9528], [0.2771, 0.9711],
+  [0.2909, 0.9869], [0.3064, 0.9994], [0.3192, 0.9838], [0.3294, 0.9622],
+  [0.3417, 0.9390], [0.3526, 0.9205], [0.3659, 0.9004], [0.3780, 0.8842],
+  [0.3930, 0.8664], [0.4092, 0.8494], [0.4234, 0.8358], [0.4385, 0.8201],
+  [0.4530, 0.8027], [0.4663, 0.7813], [0.4739, 0.7601], [0.4923, 0.7571],
+  [0.5116, 0.7575], [0.5336, 0.7579], [0.5526, 0.7581], [0.5748, 0.7584],
+  [0.5945, 0.7493], [0.6128, 0.7424], [0.6303, 0.7337], [0.6482, 0.7225],
+  [0.6673, 0.7088], [0.6826, 0.6959], [0.6966, 0.6781], [0.7067, 0.6550],
+  [0.7092, 0.6312], [0.7029, 0.6079], [0.6908, 0.5881], [0.6793, 0.5723],
+  [0.6932, 0.5648], [0.7122, 0.5696], [0.7301, 0.5801], [0.7480, 0.5906],
+  [0.7679, 0.5927], [0.7893, 0.5931], [0.8085, 0.5935], [0.8286, 0.5937],
+  [0.8488, 0.5913], [0.8698, 0.5867], [0.8889, 0.5812], [0.9082, 0.5710],
+  [0.9245, 0.5589], [0.9403, 0.5437], [0.9543, 0.5267], [0.9676, 0.5073],
+  [0.9778, 0.4879], [0.9843, 0.4647], [0.9892, 0.4384], [0.9965, 0.4181],
+  [0.9992, 0.3929], [0.9970, 0.3696], [0.9853, 0.3476], [0.9704, 0.3312],
+  [0.9703, 0.3082], [0.9681, 0.2846], [0.9609, 0.2611], [0.9503, 0.2432],
+  [0.9347, 0.2263], [0.9144, 0.2131], [0.8996, 0.2010], [0.8873, 0.1810],
+  [0.8733, 0.1639], [0.8562, 0.1487], [0.8392, 0.1372], [0.8200, 0.1272],
+  [0.8021, 0.1196], [0.7846, 0.1068], [0.7681, 0.0887], [0.7526, 0.0753],
+  [0.7339, 0.0653], [0.7161, 0.0609], [0.6922, 0.0596], [0.6780, 0.0491],
+  [0.6624, 0.0362], [0.6409, 0.0240], [0.6241, 0.0177], [0.6042, 0.0145],
+  [0.5842, 0.0150], [0.5618, 0.0183], [0.5427, 0.0127], [0.5229, 0.0076],
+  [0.5031, 0.0043], [0.4842, 0.0029], [0.4641, 0.0037],
 ];
 
-const INTERNAL_LINES: [number, number][][] = [
-  [[0.28, 0.35], [0.35, 0.28], [0.45, 0.25], [0.55, 0.25], [0.65, 0.28], [0.73, 0.33], [0.77, 0.38]],
-  [[0.30, 0.40], [0.38, 0.34], [0.48, 0.32], [0.58, 0.32], [0.68, 0.35], [0.74, 0.40]],
-  [[0.20, 0.26], [0.30, 0.20], [0.42, 0.16], [0.55, 0.15], [0.67, 0.18], [0.76, 0.24]],
-  [[0.38, 0.48], [0.39, 0.56], [0.40, 0.65], [0.41, 0.74], [0.42, 0.82]],
-  [[0.14, 0.46], [0.22, 0.42], [0.30, 0.40], [0.36, 0.40]],
-];
+const INTERNAL_LINES: [number, number][][] = [];
 
 // ---------------------------------------------------------------------------
 // Arc utils
@@ -144,6 +178,7 @@ export class EditorialBrain {
 
   private animId = 0;
   private prevLineTexts: string[] = [];
+  private startTime = 0;
 
   private centerX: number;
   private centerY: number;
@@ -174,11 +209,30 @@ export class EditorialBrain {
     this.pageWidth = container.clientWidth;
     this.pageHeight = container.clientHeight;
 
+    if (mobile) {
+      this.centerW = Math.min(280, this.pageWidth - 40);
+      this.centerH = 140;
+    }
     this.centerX = (this.pageWidth - this.centerW) / 2;
-    this.centerY = (this.pageHeight - this.centerH) / 2 - 15;
+    this.centerY = mobile
+      ? this.pageHeight * 0.52 // below brain on mobile
+      : (this.pageHeight - this.centerH) / 2 - 15;
 
+    // Map polygon points using the SAME transform as the SVG Path2D drawing
     const m = 40, bw = this.pageWidth - m * 2, bh = this.pageHeight - m * 2;
-    this.brainPixelPts = BRAIN_POLYGON.map(([nx, ny]) => [m + nx * bw, m + ny * bh] as [number, number]);
+    const bb = BRAIN_BOUNDS;
+    const brainW = bb.maxX - bb.minX;
+    const brainH = bb.maxY - bb.minY;
+    const sx = bw / brainW;
+    const sy = bh / brainH;
+    const brainScale = Math.min(sx, sy);
+    const offsetX = m + (bw - brainW * brainScale) / 2;
+    const offsetY = m + (bh - brainH * brainScale) / 2;
+    // Polygon is normalized 0..1 within BRAIN_BOUNDS, so map back to SVG coords then to screen
+    this.brainPixelPts = BRAIN_POLYGON.map(([nx, ny]) => [
+      offsetX + nx * brainW * brainScale,
+      offsetY + ny * brainH * brainScale,
+    ] as [number, number]);
     this.brainArcs = computeArcLengths(this.brainPixelPts);
     this.brainTotal = this.brainArcs[this.brainArcs.length - 1]!;
 
@@ -211,8 +265,8 @@ export class EditorialBrain {
       <p class="id-fields">Neuroengineering &middot; Optics &middot; ML</p>
       <p class="id-affiliation">Indiana University &middot; Incoming PhD</p>
       <nav class="id-links">
-        <a href="https://github.com/amit-subhash">GitHub</a>
-        <a href="https://scholar.google.com/">Scholar</a>
+        <a href="https://github.com/AmitSubhash" target="_blank">GitHub</a>
+        <a href="https://www.linkedin.com/in/amitsubhash/" target="_blank">LinkedIn</a>
         <a href="mailto:atsubhas@iu.edu">Email</a>
       </nav>
     `;
@@ -496,32 +550,118 @@ export class EditorialBrain {
     ctx.clearRect(0, 0, this.pageWidth, this.pageHeight);
     const pts = this.brainPixelPts;
 
-    // Outline with periodic pulse to reveal the full brain shape
-    const pulseT = t * 0.125; // ~8s period
+    const elapsed = t - this.startTime;
+
+    // Scale SVG path to fit the page
+    const m = 40;
+    const bw = this.pageWidth - m * 2;
+    const bh = this.pageHeight - m * 2;
+    const bb = BRAIN_BOUNDS;
+    const svgSx = bw / (bb.maxX - bb.minX);
+    const svgSy = bh / (bb.maxY - bb.minY);
+    const scale = Math.min(svgSx, svgSy);
+    const offsetX = m + (bw - (bb.maxX - bb.minX) * scale) / 2;
+    const offsetY = m + (bh - (bb.maxY - bb.minY) * scale) / 2;
+    const svgPath = new Path2D(BRAIN_SVG_OUTER);
+
+    // Estimated total path length in SVG space (~2000 units)
+    const pathLen = 2000;
+
+    // Phase 1 (0-4s): stroke-draw animation -- brain draws itself
+    // Phase 2 (4-6s): fade from drawn to periodic pulse
+    // Phase 3 (6s+): periodic pulse
+    const DRAW_DURATION = 4;
+    const FADE_DURATION = 2;
+
+    // Periodic pulse (always computed, blended in after intro)
+    const pulseT = t * 0.125;
     const pulseRaw = Math.sin(pulseT * Math.PI * 2);
     const pulse = pulseRaw > 0 ? pulseRaw * pulseRaw : 0;
-    const outlineAlpha = 0.04 + pulse * 0.20;
+    const pulseAlpha = 0.04 + pulse * 0.18;
 
-    ctx.beginPath();
-    ctx.moveTo(pts[0]![0], pts[0]![1]);
-    for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i]![0], pts[i]![1]);
-    ctx.closePath();
-    ctx.strokeStyle = `rgba(74, 124, 111, ${outlineAlpha.toFixed(3)})`;
-    ctx.lineWidth = 0.7 + pulse * 0.8;
-    ctx.stroke();
+    ctx.save();
+    ctx.translate(offsetX - bb.minX * scale, offsetY - bb.minY * scale);
+    ctx.scale(scale, scale);
 
-    // Internals -- also pulse
-    const intAlpha = 0.02 + pulse * 0.08;
-    const m = 40, bw = this.pageWidth - m * 2, bh = this.pageHeight - m * 2;
-    for (const line of INTERNAL_LINES) {
-      ctx.beginPath();
-      for (let i = 0; i < line.length; i++) {
-        const px = m + line[i]![0] * bw, py = m + line[i]![1] * bh;
-        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    if (elapsed < DRAW_DURATION + FADE_DURATION) {
+      if (elapsed < DRAW_DURATION) {
+        // Stroke-draw: use lineDash to progressively reveal
+        const progress = elapsed / DRAW_DURATION;
+        // Ease out for smooth deceleration
+        const eased = 1 - (1 - progress) * (1 - progress);
+        const drawn = eased * pathLen;
+
+        ctx.setLineDash([drawn, pathLen]);
+        ctx.lineDashOffset = 0;
+        ctx.strokeStyle = `rgba(74, 124, 111, 0.28)`;
+        ctx.lineWidth = 1.5 / scale;
+        ctx.stroke(svgPath);
+        ctx.setLineDash([]);
+      } else {
+        // Fade from full to periodic
+        const fadeProgress = (elapsed - DRAW_DURATION) / FADE_DURATION;
+        const introAlpha = 0.28 * (1 - fadeProgress);
+        const blended = Math.max(pulseAlpha, introAlpha);
+        ctx.strokeStyle = `rgba(74, 124, 111, ${blended.toFixed(3)})`;
+        ctx.lineWidth = (0.7 + pulse * 0.8) / scale;
+        ctx.stroke(svgPath);
       }
-      ctx.strokeStyle = `rgba(74, 124, 111, ${intAlpha.toFixed(3)})`;
-      ctx.lineWidth = 0.4 + pulse * 0.3;
-      ctx.stroke();
+    } else {
+      // Normal periodic pulse
+      ctx.strokeStyle = `rgba(74, 124, 111, ${pulseAlpha.toFixed(3)})`;
+      ctx.lineWidth = (0.7 + pulse * 0.8) / scale;
+      ctx.stroke(svgPath);
+    }
+
+    ctx.restore();
+
+    // Glow the brain outline near cursor and tracers
+    // Draw bright segments of the polygon path near each light source
+    const glowRadius = 150;
+    const lightSources: { x: number; y: number; color: readonly [number, number, number]; r?: number }[] = [];
+    // Add tracers
+    for (const trDef of this.TRACERS) {
+      const headDist = t * trDef.speed + trDef.offset * this.brainTotal;
+      const [hx, hy] = pointAtArc(pts, this.brainArcs, headDist);
+      lightSources.push({ x: hx, y: hy, color: trDef.color });
+    }
+    // Add cursor
+    if (this.mouseX > 0 && this.mouseY > 0) {
+      lightSources.push({ x: this.mouseX, y: this.mouseY, color: this.CURSOR_COLOR, r: 180 });
+    }
+
+    // For each segment of the polygon, check proximity to light sources and draw brighter
+    for (let i = 0; i < pts.length; i++) {
+      const p1 = pts[i]!;
+      const p2 = pts[(i + 1) % pts.length]!;
+      const mx = (p1[0] + p2[0]) / 2;
+      const my = (p1[1] + p2[1]) / 2;
+
+      let bestGlow = 0;
+      let glowR = 0, glowG = 0, glowB = 0;
+
+      for (const ls of lightSources) {
+        const r = ls.r ?? glowRadius;
+        const dx = mx - ls.x, dy = my - ls.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < r) {
+          const f = 1 - dist / r;
+          const glow = f * f * 0.4;
+          if (glow > bestGlow) {
+            bestGlow = glow;
+            glowR = ls.color[0]; glowG = ls.color[1]; glowB = ls.color[2];
+          }
+        }
+      }
+
+      if (bestGlow > 0.01) {
+        ctx.beginPath();
+        ctx.moveTo(p1[0], p1[1]);
+        ctx.lineTo(p2[0], p2[1]);
+        ctx.strokeStyle = `rgba(${glowR}, ${glowG}, ${glowB}, ${bestGlow.toFixed(3)})`;
+        ctx.lineWidth = 1.5 + bestGlow * 3;
+        ctx.stroke();
+      }
     }
 
     // Draw each tracer
@@ -588,6 +728,7 @@ export class EditorialBrain {
   // -----------------------------------------------------------------------
 
   start(): void {
+    this.startTime = performance.now() / 1000;
     const loop = (now: number): void => {
       const t = now / 1000;
       const tracers = this.getTracerPositions(t);

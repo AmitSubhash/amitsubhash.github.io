@@ -96,62 +96,64 @@ function initSpikeBg(): void {
 
 function initBinauralBeats(): void {
   let started = false;
-  let ctx: AudioContext | null = null;
-  let gainNode: GainNode | null = null;
 
   function startAudio(): void {
     if (started) return;
     started = true;
 
-    ctx = new AudioContext();
+    try {
+      const ac = new AudioContext();
 
-    // Two oscillators, slightly different frequencies = binaural beat
-    // 174Hz base (solfeggio frequency, grounding) + 6Hz theta offset
-    const oscL = ctx.createOscillator();
-    const oscR = ctx.createOscillator();
-    oscL.type = "sine";
-    oscR.type = "sine";
-    oscL.frequency.value = 174;
-    oscR.frequency.value = 180; // 6Hz difference = theta wave
+      // Resume if suspended (browser policy)
+      if (ac.state === "suspended") ac.resume();
 
-    // Pan left/right
-    const panL = ctx.createStereoPanner();
-    const panR = ctx.createStereoPanner();
-    panL.pan.value = -1;
-    panR.pan.value = 1;
+      // Two oscillators: 174Hz left, 180Hz right = 6Hz theta binaural beat
+      const oscL = ac.createOscillator();
+      const oscR = ac.createOscillator();
+      oscL.type = "sine";
+      oscR.type = "sine";
+      oscL.frequency.value = 174;
+      oscR.frequency.value = 180;
 
-    // Very quiet
-    gainNode = ctx.createGain();
-    gainNode.gain.value = 0;
-    gainNode.gain.linearRampToValueAtTime(0.04, ctx.currentTime + 3); // fade in over 3s
+      const panL = ac.createStereoPanner();
+      const panR = ac.createStereoPanner();
+      panL.pan.value = -1;
+      panR.pan.value = 1;
 
-    oscL.connect(panL).connect(gainNode).connect(ctx.destination);
-    oscR.connect(panR).connect(gainNode);
+      // Master gain -- very quiet, fades in
+      const master = ac.createGain();
+      master.gain.setValueAtTime(0, ac.currentTime);
+      master.gain.linearRampToValueAtTime(0.035, ac.currentTime + 4);
 
-    oscL.start();
-    oscR.start();
+      oscL.connect(panL).connect(master).connect(ac.destination);
+      oscR.connect(panR).connect(master);
+      oscL.start();
+      oscR.start();
 
-    // Add a very subtle second layer: higher frequency drone
-    const oscH = ctx.createOscillator();
-    oscH.type = "sine";
-    oscH.frequency.value = 396; // another solfeggio
-    const gainH = ctx.createGain();
-    gainH.gain.value = 0;
-    gainH.gain.linearRampToValueAtTime(0.008, ctx.currentTime + 5);
-    oscH.connect(gainH).connect(ctx.destination);
-    oscH.start();
+      // Subtle higher harmonic
+      const oscH = ac.createOscillator();
+      oscH.type = "sine";
+      oscH.frequency.value = 396;
+      const gainH = ac.createGain();
+      gainH.gain.setValueAtTime(0, ac.currentTime);
+      gainH.gain.linearRampToValueAtTime(0.008, ac.currentTime + 6);
+      oscH.connect(gainH).connect(ac.destination);
+      oscH.start();
+    } catch (_) {
+      // Audio not available, silently skip
+    }
   }
 
-  // Start on first interaction (required by browser autoplay policy)
-  const trigger = (): void => {
+  // Start on first user interaction (required by autoplay policy)
+  function trigger(): void {
     startAudio();
     document.removeEventListener("click", trigger);
     document.removeEventListener("mousemove", trigger);
     document.removeEventListener("touchstart", trigger);
-  };
-  document.addEventListener("click", trigger, { once: true });
-  document.addEventListener("mousemove", trigger, { once: true });
-  document.addEventListener("touchstart", trigger, { once: true });
+  }
+  document.addEventListener("click", trigger);
+  document.addEventListener("mousemove", trigger);
+  document.addEventListener("touchstart", trigger);
 }
 
 // ---------------------------------------------------------------------------
