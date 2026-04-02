@@ -1,0 +1,6 @@
+node_modules/
+direction-a/node_modules/
+direction-a/dist/
+direction-b/
+*.png
+.DS_Store

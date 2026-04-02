@@ -1,0 +1,149 @@
+/* =========================================================================
+   Editorial Brain v9 -- Spotlight
+   ========================================================================= */
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; overflow: hidden; }
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: #08080c;
+  color: #d4d0c8;
+  font-family: "Iowan Old Style", Georgia, "Palatino Linotype", Palatino, serif;
+  cursor: none !important;
+}
+
+::selection {
+  background: rgba(74, 124, 111, 0.35);
+  color: #e8e4dc;
+}
+
+/* --- EEG background ------------------------------------------------------ */
+
+#spike-bg {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.15;
+}
+
+/* --- Editorial stage ----------------------------------------------------- */
+
+.editorial-stage {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+/* Brain canvas */
+.brain-overlay {
+  position: absolute;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Ghost text lines -- mask-based spotlight reveal */
+.ed-line {
+  position: absolute;
+  white-space: pre;
+  color: rgba(200, 196, 188, 0.65);
+  opacity: 0.012;
+  pointer-events: none;
+  user-select: none;
+  will-change: opacity, mask, font-weight;
+  -webkit-mask: none;
+  mask: none;
+  font-weight: 300;
+}
+
+/* --- Center identity block ----------------------------------------------- */
+
+.identity-block {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0;
+  /* No background -- blends with page */
+}
+
+.id-tagline {
+  font: italic 300 14px "Iowan Old Style", Georgia, "Palatino Linotype", Palatino, serif;
+  color: rgba(200, 196, 188, 0);
+  letter-spacing: 0.03em;
+  margin-bottom: 10px;
+  transition: color 0.8s ease, text-shadow 0.8s ease;
+  pointer-events: none;
+}
+
+.id-tagline.visible {
+  color: rgba(210, 195, 150, 0.30);
+  text-shadow: 0 0 20px rgba(210, 195, 150, 0.08);
+}
+
+.id-name {
+  font: 400 46px "Iowan Old Style", Georgia, "Palatino Linotype", Palatino, serif;
+  letter-spacing: -0.02em;
+  color: #e8e4dc;
+  line-height: 1.1;
+  margin-bottom: 12px;
+  transition: text-shadow 0.4s ease;
+}
+
+.identity-block:hover .id-name {
+  text-shadow: 0 0 20px rgba(210, 195, 150, 0.15), 0 0 50px rgba(210, 195, 150, 0.06);
+}
+
+.identity-block:hover .id-fields {
+  text-shadow: 0 0 12px rgba(210, 195, 150, 0.2);
+}
+
+.id-fields {
+  font: 500 12px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #4a7c6f;
+  margin-bottom: 10px;
+}
+
+.id-affiliation {
+  font: 400 11px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: 0.04em;
+  color: rgba(212, 208, 200, 0.30);
+  margin-bottom: 20px;
+}
+
+.id-links {
+  display: flex;
+  gap: 24px;
+}
+
+.id-links a {
+  font: 500 11px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(212, 208, 200, 0.30);
+  text-decoration: none;
+  cursor: none !important;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.id-links a:hover {
+  color: rgb(210, 195, 150);
+  text-shadow: 0 0 12px rgba(210, 195, 150, 0.4), 0 0 30px rgba(210, 195, 150, 0.15);
+}
+
+/* Ensure cursor hidden everywhere */
+*, *::before, *::after {
+  cursor: none !important;
+}
