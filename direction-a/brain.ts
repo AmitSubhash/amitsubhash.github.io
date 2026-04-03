@@ -738,14 +738,8 @@ export class EditorialBrain {
       const obstacles = [...tracers];
       const allLights: { x: number; y: number; color: readonly [number, number, number]; radius?: number }[] = [...tracers];
       if (mouseActive) {
-        // Check if near IU affiliation line -- use crimson color
-        const ecx = this.centerX + this.centerW / 2;
-        const iuY = this.centerY + this.centerH * 0.62;
-        const nearIU = Math.abs(this.mouseY - iuY) < 25 && Math.abs(this.mouseX - ecx) < this.centerW * 0.6;
-        const cursorColor: readonly [number, number, number] = nearIU ? [180, 20, 20] : this.CURSOR_COLOR;
-
-        obstacles.push({ x: this.mouseX, y: this.mouseY, color: cursorColor });
-        allLights.push({ x: this.mouseX, y: this.mouseY, color: cursorColor, radius: this.CURSOR_SPOTLIGHT_R });
+        obstacles.push({ x: this.mouseX, y: this.mouseY, color: this.CURSOR_COLOR });
+        allLights.push({ x: this.mouseX, y: this.mouseY, color: this.CURSOR_COLOR, radius: this.CURSOR_SPOTLIGHT_R });
       }
 
       this.layoutText(obstacles);
@@ -756,53 +750,31 @@ export class EditorialBrain {
       if (mouseActive) {
         const ctx = this.brainCtx;
 
-        // Check proximity to center identity block
-        const ecx = this.centerX + this.centerW / 2;
-        const ecy = this.centerY + this.centerH / 2;
-        const dxC = this.mouseX - ecx;
-        const dyC = this.mouseY - ecy;
-        const distCenter = Math.sqrt(dxC * dxC + dyC * dyC);
-        const centerProximity = Math.max(0, 1 - distCenter / 200); // 0 far, 1 close
-
-        // Check if near the IU affiliation line (roughly centerY + 100..120)
-        const iuY = this.centerY + this.centerH * 0.62;
-        const nearIU = Math.abs(this.mouseY - iuY) < 25 && Math.abs(this.mouseX - ecx) < this.centerW * 0.6;
-
-        // Color: default warm gold, turns red near IU, fades near center
-        let cr: number, cg: number, cb: number;
-        if (nearIU) {
-          cr = 180; cg = 20; cb = 20; // IU crimson
-        } else {
-          [cr, cg, cb] = this.CURSOR_COLOR;
-        }
-
-        // Fade opacity when close to center block
-        const fadeAlpha = 1 - centerProximity * 0.8;
-
-        if (fadeAlpha > 0.05) {
+        const [cr, cg, cb] = this.CURSOR_COLOR;
+        {
           // Outer glow
           const g3 = ctx.createRadialGradient(this.mouseX, this.mouseY, 0, this.mouseX, this.mouseY, 28);
-          g3.addColorStop(0, `rgba(${cr}, ${cg}, ${cb}, ${(0.09 * fadeAlpha).toFixed(3)})`);
+          g3.addColorStop(0, `rgba(${cr}, ${cg}, ${cb}, ${(0.09 * 1).toFixed(3)})`);
           g3.addColorStop(1, `rgba(${cr}, ${cg}, ${cb}, 0)`);
           ctx.fillStyle = g3;
           ctx.beginPath(); ctx.arc(this.mouseX, this.mouseY, 28, 0, Math.PI * 2); ctx.fill();
 
           // Mid glow
           const g2 = ctx.createRadialGradient(this.mouseX, this.mouseY, 0, this.mouseX, this.mouseY, 10);
-          g2.addColorStop(0, `rgba(${Math.min(255, cr + 30)}, ${Math.min(255, cg + 30)}, ${Math.min(255, cb + 30)}, ${(0.18 * fadeAlpha).toFixed(3)})`);
-          g2.addColorStop(0.5, `rgba(${cr}, ${cg}, ${cb}, ${(0.05 * fadeAlpha).toFixed(3)})`);
+          g2.addColorStop(0, `rgba(${Math.min(255, cr + 30)}, ${Math.min(255, cg + 30)}, ${Math.min(255, cb + 30)}, ${(0.18 * 1).toFixed(3)})`);
+          g2.addColorStop(0.5, `rgba(${cr}, ${cg}, ${cb}, ${(0.05 * 1).toFixed(3)})`);
           g2.addColorStop(1, `rgba(${cr}, ${cg}, ${cb}, 0)`);
           ctx.fillStyle = g2;
           ctx.beginPath(); ctx.arc(this.mouseX, this.mouseY, 10, 0, Math.PI * 2); ctx.fill();
 
           // Core dot
           ctx.beginPath(); ctx.arc(this.mouseX, this.mouseY, 2.2, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${Math.min(255, cr + 40)}, ${Math.min(255, cg + 40)}, ${Math.min(255, cb + 40)}, ${(0.6 * fadeAlpha).toFixed(3)})`;
+          ctx.fillStyle = `rgba(${Math.min(255, cr + 40)}, ${Math.min(255, cg + 40)}, ${Math.min(255, cb + 40)}, ${(0.6 * 1).toFixed(3)})`;
           ctx.fill();
 
           // Bright center
           ctx.beginPath(); ctx.arc(this.mouseX, this.mouseY, 0.8, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${Math.min(255, cr + 60)}, ${Math.min(255, cg + 60)}, ${Math.min(255, cb + 60)}, ${(0.8 * fadeAlpha).toFixed(3)})`;
+          ctx.fillStyle = `rgba(${Math.min(255, cr + 60)}, ${Math.min(255, cg + 60)}, ${Math.min(255, cb + 60)}, ${(0.8 * 1).toFixed(3)})`;
           ctx.fill();
         }
       }
