@@ -1,0 +1,46 @@
+name: IndexNow Auto-Submit
+
+# Notify IndexNow (Bing, Yandex, Seznam, Naver) on every push to main.
+# Submits the canonical site URLs so search engines re-crawl after content updates.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  indexnow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Submit URLs to IndexNow
+        run: |
+          set -euo pipefail
+          KEY="c2b135269ad545499da2dd98d9cb0610"
+          HOST="amitsubhash.github.io"
+          KEY_LOCATION="https://${HOST}/${KEY}.txt"
+
+          # Build JSON payload with all canonical URLs from the sitemap
+          PAYLOAD=$(cat <<JSON
+          {
+            "host": "${HOST}",
+            "key": "${KEY}",
+            "keyLocation": "${KEY_LOCATION}",
+            "urlList": [
+              "https://${HOST}/",
+              "https://${HOST}/about.html",
+              "https://${HOST}/research.html",
+              "https://${HOST}/projects.html"
+            ]
+          }
+          JSON
+          )
+
+          echo "Submitting to api.indexnow.org..."
+          # IndexNow has one shared endpoint that fans out to all participating engines
+          # (Bing, Yandex, Seznam, Naver, Yep). Single POST = all of them notified.
+          curl -sS -X POST "https://api.indexnow.org/IndexNow" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            -d "$PAYLOAD" \
+            -w "\nHTTP %{http_code}\n"
+
+          echo "Done."
