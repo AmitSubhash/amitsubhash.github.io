@@ -84,9 +84,11 @@
     </main>
   </noscript>
 
-  <!-- Always-rendered prose block for crawlers (visually hidden via CSS). -->
+  <!-- Always-rendered prose block for crawlers (visually hidden via CSS).
+       Kept in the DOM (not display:none) so Google, Bing, and LLM crawlers
+       can read it. Includes an H1 they cannot miss. -->
   <div class="seo-prose" aria-hidden="false">
-    <h1>Amit Subhash</h1>
+    <h1>Amit Subhash — Neuroengineering, Indiana University</h1>
     <p>
       Amit Subhash is an incoming PhD student in Neuroengineering at
       <a href="https://www.indiana.edu/">Indiana University</a>, and a
