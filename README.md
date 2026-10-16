@@ -1,6 +1,6 @@
 # amit-subhash
 
-Portfolio. Ghost text from a personal creed flows around a brain outline, illuminated by colored tracers that travel along neural pathways. Built with [@chenglou/pretext](https://github.com/chenglou/pretext) for real-time text measurement and obstacle-aware reflow at 60fps.
+Portfolio. Ghost text describing my research flows around a brain outline, illuminated by colored tracers that travel along neural pathways. Built with [@chenglou/pretext](https://github.com/chenglou/pretext) for real-time text measurement and obstacle-aware reflow at 60fps.
 
 **[Live site](https://amitsubhash.github.io/)**
 
@@ -18,11 +18,12 @@ Portfolio. Ghost text from a personal creed flows around a brain outline, illumi
 ## Development
 
 ```bash
-cd direction-a
-npm install
-npm run build    # one-time build
-npm run dev      # watch mode
+npm install                  # @chenglou/pretext (root package.json)
+cd direction-a && npm install # esbuild
+npx esbuild main.ts --bundle --format=esm --target=es2022 --minify --outfile=../dist/main.js
 ```
+
+`index.html` loads the root `dist/main.js`; `npm run build` writes to the ignored `direction-a/dist/` instead.
 
 ## Stack
 

@@ -3,7 +3,7 @@
 ## What We Built
 
 An interactive portfolio page at **amitsubhash.github.io** where:
-- Ghost text (a personal creed mixing Rockefeller philosophy + research narrative) fills the entire viewport
+- Ghost text (a research narrative; originally a personal creed mixing Rockefeller philosophy + research) fills the entire viewport
 - A traced brain SVG outline spans the page as a background element
 - Three colored tracers (amber, teal, silver) travel along the brain outline
 - Text reflows around tracers using Pretext's `layoutNextLine` with obstacle carving at 60fps

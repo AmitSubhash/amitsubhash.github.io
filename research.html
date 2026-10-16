@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Research — Amit Subhash</title>
-  <meta name="description" content="Research areas of Amit Subhash: diffuse optical tomography, neonatal brain imaging, Monte Carlo photon transport, differentiable rendering, diffusion priors for inverse problems, domain-randomized segmentation, mechanistic interpretability of biosignal models." />
+  <title>Research | Amit Subhash</title>
+  <meta name="description" content="Research of Amit Subhash, Ferradal Lab, Indiana University: subject-specific head models, GPU forward models and cross-species brain extraction for diffuse optical tomography of the infant brain." />
   <link rel="canonical" href="https://amitsubhash.github.io/research.html" />
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -21,83 +21,64 @@
     <h1>Research</h1>
 
     <p>
-      My research lives at the intersection of <strong>biomedical optics</strong>,
-      <strong>inverse problems</strong>, and <strong>modern deep learning</strong>.
-      The unifying goal is making functional neuroimaging usable at the
-      neonatal bedside. I push aggressively across multiple threads in
-      parallel — <strong>13+ active research and tooling projects</strong>
-      maintained simultaneously, with new commits almost every day.
+      I work in the Ferradal Lab at Indiana University on
+      <strong>diffuse optical tomography (DOT)</strong>, which images
+      brain hemodynamics (HbO and HbR) from near-infrared light measured
+      on the scalp. DOT is portable and safe at the bedside, which makes
+      it a strong fit for the neonatal brain. Its images are only as good
+      as the model of light travelling through the head, so my work is
+      about making that model accurate for each subject and fast enough
+      to use. The piglet is our model of the neonatal brain, in a
+      collaboration with the University of Pennsylvania and Children's
+      Hospital of Philadelphia on cerebral monitoring around cardiac
+      arrest.
     </p>
 
-    <h2>Diffuse Optical Tomography for neonates</h2>
+    <h2>Does the head model matter?</h2>
     <p>
-      DOT reconstructs hemodynamic concentration changes (HbO and HbR) from
-      diffuse near-infrared light measurements. The neonatal head is a
-      special case: the skull is thin enough for light to penetrate
-      cortical tissue, but the imaging geometry is small, motion is
-      constant, and the inverse problem is severely ill-posed.
+      I built an end-to-end pipeline from a subject's T1 MRI to a DOT
+      reconstruction: brain extraction and tissue segmentation
+      (extracerebral tissue, CSF, gray and white matter) with nnU-Net and
+      SynthSeg-style synthetic training, a finite-element head mesh with
+      iso2mesh, then forward models and wavelength-specific Jacobians
+      (sensitivity matrices). The sensitivity maps quantify cortical
+      coverage and guided the design of a 57-optode high-density array.
+      The question this thread asks is how much a subject-specific head
+      model changes the reconstructed image compared with an atlas.
     </p>
     <p>
-      My thesis line of work — see
-      <a href="https://github.com/AmitSubhash/piglet-realtime">piglet-realtime</a>
-      — develops a real-time multi-wavelength reconstruction pipeline
-      validated on a piglet neonatal model. Key components include a
-      Q-prior for ill-posed inversion and GCV-based automatic
-      regularization parameter selection.
-    </p>
-
-    <h2>Differentiable photon transport</h2>
-    <p>
-      Classical Monte Carlo photon transport (MCX) treats the forward
-      model as a black box. Differentiable Monte Carlo opens the door to
-      end-to-end DOT optimization — backpropagating through the simulator
-      to learn optode placement, source profiles, or learned
-      regularizers. See
-      <a href="https://github.com/AmitSubhash/diff-photon-transport">diff-photon-transport</a>.
+      I presented the system as a first-author oral at the Optica
+      Biophotonics Congress 2026:
+      <a href="https://doi.org/10.1364/OTS.2026.OT2D.3">"Developing Diffuse
+      Optical Tomography for Peri-Arrest Monitoring in Piglets" (OT2D.3)</a>.
+      A companion poster with Brian White's group, "First-in-Large-Animal
+      Diffuse Optical Tomography: Hardware and Pipeline for Peri-Arrest
+      Monitoring in Piglets," is at fNIRS 2026 in Macau in October 2026.
     </p>
 
-    <h2>Generative priors for inverse problems</h2>
+    <h2>How fast can a subject-specific forward model be?</h2>
     <p>
-      Score-based and diffusion models have transformed image priors in
-      MRI and CT reconstruction. I am adapting these approaches to DOT,
-      where the inverse problem is more nonlinear and the data are far
-      sparser. See
-      <a href="https://github.com/AmitSubhash/diffusion-priors-dot">diffusion-priors-dot</a>
-      and
-      <a href="https://github.com/AmitSubhash/dot-test-time-compute">dot-test-time-compute</a>.
+      A head model per subject is only practical if the forward model is
+      cheap. I moved the DOT forward solve to the GPU with CUDA and cut
+      one step from about 1400 s to 8 s, validated against the MATLAB
+      reference. I work with both Monte Carlo photon transport (MCX) and
+      finite-element solvers (NIRFAST/NIRFASTer, NeuroDOT).
     </p>
 
-    <h2>Contrast-agnostic preclinical segmentation</h2>
+    <h2>Can one brain-extraction model work across species?</h2>
     <p>
-      Reliable DOT requires accurate anatomical priors. Preclinical
-      piglet MRI comes in many contrasts; rather than retraining
-      per-contrast, I use SynthSeg-style domain randomization and
-      Segment Anything (SAM2) to build contrast-agnostic segmenters.
-      See <a href="https://github.com/AmitSubhash/synpig">synpig</a>
-      (Dice 0.9622) and
-      <a href="https://github.com/AmitSubhash/sam-synthseg-piglet">sam-synthseg-piglet</a>.
+      Every head model starts with finding the brain in the MRI. Tools
+      built for adult human scans often fail on piglet and other animal
+      MRI, which come in many contrasts and shapes. I am training
+      segmenters on synthetic, domain-randomized images, aiming for one
+      model that handles new scans across species.
     </p>
 
-    <h2>Mechanistic interpretability of biosignal models</h2>
+    <h2>Code</h2>
     <p>
-      Tiny transformers trained on fNIRS and other biosignals are
-      starting to outperform handcrafted features. What features do they
-      learn? <a href="https://github.com/AmitSubhash/biosignal-interp">biosignal-interp</a>
-      trains sparse autoencoders on a small fNIRS transformer to ask
-      whether the latent features map onto anything humans recognize.
-    </p>
-
-    <h2>Open research infrastructure</h2>
-    <p>
-      Most research time is spent on plumbing.
-      <a href="https://github.com/AmitSubhash/iu-hpc-agent">iu-hpc-agent</a>
-      is a verified reference for AI coding agents on the Indiana
-      University Big Red 200 and Quartz HPC clusters.
-      <a href="https://github.com/AmitSubhash/research-os">research-os</a>
-      is an arXiv watcher with a DSPy classifier and Obsidian writer on cron.
-      <a href="https://github.com/AmitSubhash/3brown1blue">3brown1blue</a>
-      is a Manim skill for generating 3Blue1Brown-style explainer videos
-      from papers.
+      Code built on unpublished lab data stays private until the work is
+      published. My public code and open-source contributions are on the
+      <a href="/projects.html">Projects</a> page.
     </p>
   </main>
 </body>

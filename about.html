@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About — Amit Subhash</title>
-  <meta name="description" content="Amit Subhash is an incoming PhD in Neuroengineering at Indiana University. 30+ open-source projects, 600+ commits in the last year, working on diffuse optical tomography and neonatal brain imaging." />
+  <title>About | Amit Subhash</title>
+  <meta name="description" content="Amit Subhash is a PhD student in Intelligent Systems Engineering (Neuroengineering) at Indiana University, advised by Silvina Ferradal, working on head models and fast photon transport for infant optical neuroimaging." />
   <link rel="canonical" href="https://amitsubhash.github.io/about.html" />
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -21,79 +21,65 @@
     <h1>About</h1>
 
     <p>
-      I am Amit Subhash. I build things, constantly. I am an incoming
-      PhD student in Neuroengineering at Indiana University, where I
-      work on <strong>Diffuse Optical Tomography (DOT)</strong> for
-      neonatal brain imaging. I previously completed an MS in Data
-      Science.
-    </p>
-
-    <h2>By the numbers</h2>
-    <ul>
-      <li><strong>30+</strong> open-source projects under active maintenance</li>
-      <li><strong>600+</strong> commits across public repositories in the last year</li>
-      <li><strong>13+</strong> distinct research and tooling threads pushed forward in parallel</li>
-      <li><strong>Dice 0.9622</strong> on 4-week piglet skull stripping (<a href="https://github.com/AmitSubhash/synpig">synpig</a>)</li>
-      <li>HPC training pipelines on <strong>Indiana University Big Red 200</strong> (4× A100, SLURM)</li>
-    </ul>
-
-    <h2>What I work on</h2>
-
-    <p>
-      My research centers on <strong>Diffuse Optical Tomography</strong>
-      — a non-ionizing, low-cost neuroimaging modality that uses
-      near-infrared light to reconstruct hemodynamic activity in the
-      brain. DOT is uniquely suited to neonatal brain imaging: portable,
-      safe at the bedside, and effective through the thin neonatal
-      skull. The hard problems are the <strong>forward model</strong>
-      (Monte Carlo photon transport in heterogeneous tissue), the
-      <strong>inverse problem</strong> (ill-posed reconstruction from
-      sparse boundary measurements), and <strong>real-time
-      performance</strong> on commodity hardware.
+      I am a PhD student in Intelligent Systems Engineering
+      (Neuroengineering) at Indiana University, advised by
+      Silvina Ferradal. I make optical brain imaging of infants and
+      animals anatomically accurate and fast: MRI segmentation, FEM head
+      mesh, GPU photon transport, reconstruction.
     </p>
 
     <p>
-      I attack each of these with a different stack. Classical
-      regularization (Tikhonov, GCV) and modern learned priors
-      (diffusion posterior sampling, score-based generative models) for
-      the inverse side. Differentiable Monte Carlo for end-to-end
-      optimization through the forward model. SynthSeg-style domain
-      randomization plus SAM2 for contrast-agnostic anatomical priors.
-      Sparse autoencoders for understanding what tiny biosignal
-      transformers actually learn. And underneath all of it, an opinionated
-      research infrastructure of arXiv watchers, DSPy classifiers, and HPC
-      reference docs that turn a one-person lab into something that
-      ships.
+      In the Ferradal Lab I built the MRI-to-mesh-to-Jacobian pipeline
+      for a first-in-large-animal high-density diffuse optical
+      tomography (DOT) study with the University of Pennsylvania and
+      Children's Hospital of Philadelphia, cut a forward-solve step from
+      about 1400 s to 8 s on the GPU (validated against the MATLAB
+      reference), and presented the system as a first-author oral at the
+      Optica Biophotonics Congress 2026.
     </p>
 
-    <h2>Stack</h2>
-    <ul>
-      <li><strong>Primary</strong>: Python — PyTorch, JAX, NumPy, SciPy, nibabel, MONAI</li>
-      <li><strong>Biomedical optics</strong>: MCX, NIRFASTer, NeuroDOT, iso2mesh (MATLAB and Python)</li>
-      <li><strong>HPC</strong>: Indiana University Big Red 200 (4× A100, 500 GB RAM), SLURM, CUDA 12.6</li>
-      <li><strong>Frontend / side</strong>: TypeScript, React, Next.js, Tailwind, Swift (macOS)</li>
-      <li><strong>Agentic systems</strong>: Claude Code, DSPy, MIPROv2, ColBERT</li>
-    </ul>
-
-    <h2>Affiliations</h2>
-    <ul>
-      <li>Indiana University, Neuroengineering — incoming PhD</li>
-      <li>Indiana University — MS Data Science (prior)</li>
-    </ul>
-
-    <h2>How I work</h2>
     <p>
-      I prefer single long sessions. I research and reuse before
-      building net-new — proven implementations beat novelty almost
-      every time. I write conventional commits, run TDD on new code,
-      and review before merging. I push almost every day, because
-      research compounds when the loop is tight.
+      I am looking for a summer 2027 research visit, mid-May to late
+      August, with a group working on diffuse optics, fNIRS, head
+      modeling or neonatal neuroimaging.
     </p>
+
+    <h2>Talks and posters</h2>
+    <ul>
+      <li>
+        <strong>A. T. Subhash</strong> et al., "Developing Diffuse Optical
+        Tomography for Peri-Arrest Monitoring in Piglets," Optica
+        Biophotonics Congress 2026, oral presentation OT2D.3.
+        <a href="https://doi.org/10.1364/OTS.2026.OT2D.3">doi:10.1364/OTS.2026.OT2D.3</a>
+      </li>
+      <li>
+        B. R. White, <strong>A. T. Subhash</strong>, D. Derman,
+        H. B. Fisher, S. A. Paladugu, A. Crozier, T. S. Ko,
+        S. L. Ferradal, "First-in-Large-Animal Diffuse Optical
+        Tomography: Hardware and Pipeline for Peri-Arrest Monitoring in
+        Piglets," poster, fNIRS 2026, Macau, October 2026.
+      </li>
+    </ul>
+
+    <h2>Tools</h2>
+    <ul>
+      <li><strong>Optical modeling</strong>: MCX, NIRFAST/NIRFASTer, NeuroDOT, iso2mesh (MATLAB and Python)</li>
+      <li><strong>Neuroimaging</strong>: nnU-Net, FSL (BET, FAST, topup, FLIRT), nilearn, ITK-SNAP, FSLeyes, Freeview</li>
+      <li><strong>Computing</strong>: Python (PyTorch, NumPy, SciPy), MATLAB, CUDA, SLURM on Indiana University's Big Red 200</li>
+    </ul>
+
+    <h2>Education</h2>
+    <ul>
+      <li>PhD, Intelligent Systems Engineering (Neuroengineering), Indiana University, 2026 to present</li>
+      <li>MS, Data Science, Indiana University, 2026</li>
+      <li>B.Tech, Electronics and Telecommunication, Vishwakarma Institute of Technology, Pune, 2024</li>
+    </ul>
 
     <h2>Contact</h2>
     <ul>
+      <li>Email: <a href="mailto:atsubhas@iu.edu">atsubhas@iu.edu</a></li>
+      <li>LinkedIn: <a href="https://www.linkedin.com/in/amitsubhash/">linkedin.com/in/amitsubhash</a></li>
       <li>GitHub: <a href="https://github.com/AmitSubhash">github.com/AmitSubhash</a></li>
-      <li>Site: <a href="https://amitsubhash.github.io">amitsubhash.github.io</a></li>
     </ul>
   </main>
 </body>
