@@ -155,6 +155,14 @@ function carveSlots(left: number, right: number, blocked: Interval[]): Interval[
 
 interface TextLine {
   x: number; y: number; width: number; text: string; el: HTMLSpanElement;
+  /** Last value written per inline style property, so unchanged values are not rewritten. */
+  css: Record<string, string>;
+}
+
+function setCss(line: TextLine, prop: string, value: string): void {
+  if (line.css[prop] === value) return;
+  line.css[prop] = value;
+  line.el.style.setProperty(prop, value);
 }
 
 // ---------------------------------------------------------------------------
@@ -289,14 +297,23 @@ export class EditorialBrain {
 
     // Mouse/touch tracking
     if (!this.isMobile) {
+      // Cursor dot lives in the DOM above the identity block (the canvas sits
+      // below it, so a canvas-drawn dot vanished over the name and links) and
+      // moves on mousemove rather than on the next animation frame.
+      const dot = document.createElement("div");
+      dot.className = "cursor-dot";
+      this.stage.appendChild(dot);
       this.stage.addEventListener("mousemove", (e: MouseEvent) => {
         const rect = this.container.getBoundingClientRect();
         this.mouseX = e.clientX - rect.left;
         this.mouseY = e.clientY - rect.top;
+        dot.style.transform = `translate3d(${this.mouseX}px, ${this.mouseY}px, 0)`;
+        dot.style.opacity = "1";
       });
       this.stage.addEventListener("mouseleave", () => {
         this.mouseX = -9999;
         this.mouseY = -9999;
+        dot.style.opacity = "0";
       });
     } else {
       // Mobile: tap to place temporary light
@@ -387,8 +404,8 @@ export class EditorialBrain {
           if (this.prevLineTexts[lineIdx] !== line.text) {
             tl.el.textContent = line.text;
           }
-          tl.el.style.left = x + "px";
-          tl.el.style.top = y + "px";
+          setCss(tl, "left", x + "px");
+          setCss(tl, "top", y + "px");
           tl.x = x; tl.y = y; tl.width = line.width; tl.text = line.text;
         } else {
           // Create new element
@@ -400,7 +417,7 @@ export class EditorialBrain {
           el.style.font = this.BODY_FONT;
           el.style.lineHeight = lh + "px";
           this.stage.appendChild(el);
-          this.textLines.push({ x, y, width: line.width, text: line.text, el });
+          this.textLines.push({ x, y, width: line.width, text: line.text, el, css: { left: x + "px", top: y + "px" } });
         }
 
         lineIdx++;
@@ -477,11 +494,11 @@ export class EditorialBrain {
       }
 
       if (bestSmooth < 0.003) {
-        line.el.style.opacity = "0.012";
-        line.el.style.mask = "none";
-        line.el.style.webkitMask = "none";
-        line.el.style.color = "";
-        line.el.style.fontWeight = "300";
+        setCss(line, "opacity", "0.012");
+        setCss(line, "mask", "none");
+        setCss(line, "-webkit-mask", "none");
+        setCss(line, "color", "");
+        setCss(line, "font-weight", "300");
         continue;
       }
 
@@ -511,16 +528,16 @@ export class EditorialBrain {
       // Composite masks -- CSS mask supports multiple layers with add
       // We use the mask-composite to combine them
       const maskStr = maskParts.join(", ");
-      line.el.style.mask = maskStr;
-      line.el.style.webkitMask = maskStr;
+      setCss(line, "mask", maskStr);
+      setCss(line, "-webkit-mask", maskStr);
       if (maskParts.length > 1) {
-        line.el.style.maskComposite = "add";
-        (line.el.style as any).webkitMaskComposite = "source-over";
+        setCss(line, "mask-composite", "add");
+        setCss(line, "-webkit-mask-composite", "source-over");
       } else {
-        line.el.style.maskComposite = "";
-        (line.el.style as any).webkitMaskComposite = "";
+        setCss(line, "mask-composite", "");
+        setCss(line, "-webkit-mask-composite", "");
       }
-      line.el.style.opacity = "1";
+      setCss(line, "opacity", "1");
 
       // Blended color from all tracers
       if (totalWeight > 0) {
@@ -531,13 +548,14 @@ export class EditorialBrain {
         const r = Math.round(cr + (240 - cr) * cf * 0.5);
         const g = Math.round(cg + (235 - cg) * cf * 0.5);
         const b = Math.round(cb + (230 - cb) * cf * 0.5);
-        line.el.style.color = `rgb(${r}, ${g}, ${b})`;
+        setCss(line, "color", `rgb(${r}, ${g}, ${b})`);
 
-        // Font weight: 300 (ghost) -> 500 (lit)
-        const weight = Math.round(300 + bestSmooth * 200);
-        line.el.style.fontWeight = String(weight);
+        // Font weight: 300 (ghost) -> 500 (lit), in 100 steps. The serif stack has
+        // no light or medium faces, so finer steps only forced text re-layout.
+        const weight = Math.round(3 + bestSmooth * 2) * 100;
+        setCss(line, "font-weight", String(weight));
       } else {
-        line.el.style.fontWeight = "300";
+        setCss(line, "font-weight", "300");
       }
     }
   }
@@ -747,7 +765,7 @@ export class EditorialBrain {
       this.updateSpotlight(allLights);
       this.drawBrain(t);
 
-      // Draw cursor tracer dot
+      // Cursor glow on the canvas (the dot itself is the .cursor-dot element)
       if (mouseActive) {
         const ctx = this.brainCtx;
 
@@ -767,16 +785,6 @@ export class EditorialBrain {
           g2.addColorStop(1, `rgba(${cr}, ${cg}, ${cb}, 0)`);
           ctx.fillStyle = g2;
           ctx.beginPath(); ctx.arc(this.mouseX, this.mouseY, 10, 0, Math.PI * 2); ctx.fill();
-
-          // Core dot
-          ctx.beginPath(); ctx.arc(this.mouseX, this.mouseY, 2.2, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${Math.min(255, cr + 40)}, ${Math.min(255, cg + 40)}, ${Math.min(255, cb + 40)}, ${(0.6 * 1).toFixed(3)})`;
-          ctx.fill();
-
-          // Bright center
-          ctx.beginPath(); ctx.arc(this.mouseX, this.mouseY, 0.8, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${Math.min(255, cr + 60)}, ${Math.min(255, cg + 60)}, ${Math.min(255, cb + 60)}, ${(0.8 * 1).toFixed(3)})`;
-          ctx.fill();
         }
       }
 
